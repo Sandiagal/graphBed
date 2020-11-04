@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="ywcdxt" default="warFile" basedir="">
+
+    <property name="warFileName" value="ywcdxt.war"></property>
+
+    <path id="project.lib">
+        <fileset dir="${basedir}/WebRoot/WEB-INF/lib">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="clean">
+        <delete dir="${basedir}/WebRoot/WEB-INF/classes" />
+        <mkdir dir="${basedir}/WebRoot/WEB-INF/classes" />
+    </target>
+    <copy todir="${basedir}/WebRoot/WEB-INF/lib" overwrite="true">
+        <fileset dir="${basedir}">
+            <include name="jsp-api.jar"/>
+            <include name="servlet-api.jar"/>
+        </fileset>
+    </copy>
+    <target name="compile" depends="clean">
+        <javac srcdir="${basedir}/src" encoding="utf-8" destdir="${basedir}/WebRoot/WEB-INF/classes" includeantruntime="false" bootclasspath="${java.home}/lib/rt.jar">
+            <classpath refid="project.lib">
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="warFile" depends="compile">
+
+        <delete dir="${basedir}/${warFileName}" />
+        <delete file="${basedir}/WebContent/WEB-INF/lib/jsp-api.jar"/>
+        <delete file="${basedir}/WebContent/WEB-INF/lib/servlet-api.jar"/>
+        
+        <copy todir="${basedir}/WebRoot/WEB-INF/classes">
+            <fileset dir="${basedir}/src">
+                <include name="**/*.properties"/>
+                <include name="**/*.hbm.xml"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <war destfile="${basedir}/ywcdxt/${warFileName}" webxml="${basedir}/WebRoot/WEB-INF/web.xml">
+            <fileset dir="${basedir}/WebRoot">
+                <include name="**/**.*" />
+                <exclude name="**/*.jar"/>
+                <exclude name="**/*.class"/>
+            </fileset>
+            <lib dir="${basedir}/WebRoot/WEB-INF/lib" />
+            <classes dir="${basedir}/WebRoot/WEB-INF/classes" />
+        </war>
+    </target>
+
+</project>
